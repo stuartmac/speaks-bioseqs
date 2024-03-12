@@ -1,3 +1,19 @@
 body {
     margin-top: 20px;
 }
+
+/* Add custom styles for Materialize components here */
+/* Example: Adjusting padding or margins to prevent overlapping */
+.input-field .prefix ~ .materialize-textarea {
+    margin-left: 3rem;
+}
+
+.input-field .materialize-textarea:focus {
+    margin-left: 0;
+    box-shadow: 0 1px 0 0 #26a69a;
+}
+
+/* Ensuring the label floats above on focus */
+.input-field label.active {
+    transform: translateY(-14px) scale(0.8);
+}
