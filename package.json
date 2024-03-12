@@ -1,0 +1,16 @@
+{
+  "name": "speaks-bioseqs",
+  "version": "1.0.0",
+  "description": "Speaks-Bioseqs is a tool designed to effortlessly identify and interpret biological sequence formats in real-time.",
+  "main": "index.js",
+  "scripts": {
+    "start": "lite-server",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "lite-server": "^2.6.1"
+  }
+}
