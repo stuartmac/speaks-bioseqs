@@ -4,27 +4,6 @@ body {
     background-color: #f4f4f4;
 }
 
-.container {
-    width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-}
-
-textarea {
-    width: 80%;
-    padding: 10px;
-    margin-bottom: 20px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
-
-@media (max-width: 768px) {
-    .container {
-        padding: 10px;
-    }
-}
-
 /* Add custom styles for Materialize components here */
 /* Example: Adjusting padding or margins to prevent overlapping */
 .input-field .prefix ~ .materialize-textarea {
