@@ -13,6 +13,7 @@
 
         gtag('config', 'G-5CPGCNZ34Z');
     </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -20,11 +21,27 @@
         <h1>SpeaksBioSeqs!</h1>
         <h2 class="text-muted">Validate and convert biological sequence formats</h2>
         <p>Just paste your sequence into the text area to reveal its format then download it in the format of your choice.</p>
-        <textarea id="sequenceInput" rows="10" placeholder="Paste your sequence here..." aria-label="Sequence input"></textarea>
-        <p id="feedback"></p>
-        <!-- More UI elements as needed -->
+        <div class="row">
+            <form class="col s12">
+                <div class="row">
+                    <div class="input-field col s12">
+                        <!-- Adjust the classes as needed for Materialize -->
+                        <textarea id="sequenceInput" class="materialize-textarea" rows="10" placeholder="Paste your sequence here..." aria-label="Sequence input"></textarea>
+                        <label for="sequenceInput">Sequence Input</label>
+                    </div>
+                </div>
+                <p id="feedback"></p>
+            </form>
+        </div>
     </div>
     <script src="script.js"></script>
+    <!-- Materialize JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          M.updateTextFields();
+        });
+    </script>
     <footer>
         <div class="container">
             <p>Contribute on <a href="https://github.com/stuartmac/speaks-bioseqs">GitHub</a>.</p>

@@ -4,23 +4,18 @@ body {
     background-color: #f4f4f4;
 }
 
-.container {
-    width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
+/* Add custom styles for Materialize components here */
+/* Example: Adjusting padding or margins to prevent overlapping */
+.input-field .prefix ~ .materialize-textarea {
+    margin-left: 3rem;
 }
 
-textarea {
-    width: 80%;
-    padding: 10px;
-    margin-bottom: 20px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+.input-field .materialize-textarea:focus {
+    margin-left: 0;
+    box-shadow: 0 1px 0 0 #26a69a;
 }
 
-@media (max-width: 768px) {
-    .container {
-        padding: 10px;
-    }
+/* Ensuring the label floats above on focus */
+.input-field label.active {
+    transform: translateY(-14px) scale(0.8);
 }
