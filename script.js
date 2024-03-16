@@ -1,6 +1,6 @@
 // Detects the type of biological sequence (DNA, RNA, or Protein)
 function detectSequenceType(sequence) {
-    const cleanedSequence = sequence.replace(/[-.]/g, "").split("\n").join(""); // Strip gaps and newlines
+    const cleanedSequence = sequence.replace(/[-.\s]/g, ""); // Strip gaps, newlines, and whitespace
 
     if (/^[ATCGNatcgn]+$/.test(cleanedSequence)) {
         return "DNA detected";
@@ -16,33 +16,43 @@ function detectSequenceType(sequence) {
 // Checks if the input is in FASTA format and extracts the sequence
 function extractSequenceFromFASTA(text) {
     if (text.startsWith(">")) {
-        // Extracts sequence lines, ignoring the first line (header)
         const sequenceLines = text.split("\n").slice(1).join("");
-        return sequenceLines;
+        return { format: "FASTA", sequence: sequenceLines };
     }
-    // Returns null if the input is not in FASTA format
     return null;
+}
+
+// Checks if the input is in CLUSTAL format
+function detectCLUSTALFormat(text) {
+    // Simple CLUSTAL format check (can be expanded with more rigorous checks)
+    if (text.startsWith("CLUSTAL") || text.includes("CLUSTALW")) {
+        const sequenceLines = text.split("\n").slice(1).join(""); // Simplified extraction
+        return { format: "CLUSTAL", sequence: sequenceLines };
+    }
+    return null;
+}
+
+// Tries to detect the format and extract the sequence
+function detectFormatAndExtractSequence(text) {
+    // Add more format detection functions here as needed
+    const formatDetectors = [extractSequenceFromFASTA, detectCLUSTALFormat];
+    for (let detect of formatDetectors) {
+        const result = detect(text);
+        if (result !== null) return result;
+    }
+    return { format: "Unknown", sequence: text }; // Default to treating the input as a raw sequence
 }
 
 // Main function to handle input and provide feedback
 function handleInputEvent(e) {
     const text = e.target.value;
-    let feedback = "Unknown format";
 
-    // Attempts to extract the sequence from FASTA format
-    const sequenceFromFASTA = extractSequenceFromFASTA(text);
+    // Detect format and extract sequence
+    const { format, sequence } = detectFormatAndExtractSequence(text);
 
-    // Determines the sequence type based on whether it was extracted from FASTA or is a simple string
-    let sequenceType;
-    if (sequenceFromFASTA !== null) {
-        // If the sequence was extracted from FASTA, detect its type
-        sequenceType = detectSequenceType(sequenceFromFASTA);
-        feedback = `Detected format: FASTA - ${sequenceType}`;
-    } else {
-        // If the input is not in FASTA format, directly detect the sequence type
-        sequenceType = detectSequenceType(text);
-        feedback = sequenceType;
-    }
+    // Determine the sequence type
+    const sequenceType = detectSequenceType(sequence);
+    const feedback = format === "Unknown" ? sequenceType : `Detected format: ${format} - ${sequenceType}`;
 
     document.getElementById('feedback').textContent = feedback;
 }
