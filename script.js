@@ -13,48 +13,81 @@ function detectSequenceType(sequence) {
     return "Unknown format";
 }
 
-// Checks if the input is in FASTA format and extracts the sequence
-function extractSequenceFromFASTA(text) {
-    if (text.startsWith(">")) {
-        const sequenceLines = text.split("\n").slice(1).join("");
-        return { format: "FASTA", sequence: sequenceLines };
-    }
-    return null;
+function parseFASTA(text) {
+    if (!text.startsWith(">")) return null;
+    
+    const sequences = {};
+    let currentId = "";
+    text.split("\n").forEach(line => {
+        if (line.startsWith(">")) {
+            currentId = line.substring(1).trim();
+            sequences[currentId] = "";
+        } else if (currentId) {
+            sequences[currentId] += line.trim();
+        }
+    });
+    return { format: "FASTA", sequences };
 }
 
-// Checks if the input is in CLUSTAL format
-function detectCLUSTALFormat(text) {
-    // Simple CLUSTAL format check (can be expanded with more rigorous checks)
-    if (text.startsWith("CLUSTAL") || text.includes("CLUSTALW")) {
-        const sequenceLines = text.split("\n").slice(1).join(""); // Simplified extraction
-        return { format: "CLUSTAL", sequence: sequenceLines };
-    }
-    return null;
+function parseCLUSTALSequence(text) {
+    if (!text.startsWith("CLUSTAL") && !text.includes("CLUSTALW")) return null;
+
+    const sequences = {};
+    let sequenceLines = text.split("\n");
+    sequenceLines.forEach(line => {
+        if (line.trim() === "" || line.startsWith("CLUSTAL")) return;
+        
+        const parts = line.split(/ +/);
+        if (parts.length < 2) return;
+
+        const identifier = parts[0];
+        const sequencePart = parts.slice(1).join("");
+
+        if (sequences[identifier]) {
+            sequences[identifier] += sequencePart;
+        } else {
+            sequences[identifier] = sequencePart;
+        }
+    });
+    return { format: "CLUSTAL", sequences };
 }
 
-// Tries to detect the format and extract the sequence
 function detectFormatAndExtractSequence(text) {
-    // Add more format detection functions here as needed
-    const formatDetectors = [extractSequenceFromFASTA, detectCLUSTALFormat];
+    // Modular approach to format detection
+    const formatDetectors = [parseFASTA, parseCLUSTALSequence];
     for (let detect of formatDetectors) {
         const result = detect(text);
         if (result !== null) return result;
     }
-    return { format: "Unknown", sequence: text }; // Default to treating the input as a raw sequence
+    return { format: "Unknown", sequences: {"": text} }; // Treat as raw sequence if no format detected
 }
 
-// Main function to handle input and provide feedback
+function detectSequenceTypes(sequences) {
+    const sequenceTypes = {};
+    Object.keys(sequences).forEach(identifier => {
+        const sequence = sequences[identifier];
+        const type = detectSequenceType(sequence);
+        sequenceTypes[identifier] = type;
+    });
+    return sequenceTypes;
+}
+
 function handleInputEvent(e) {
     const text = e.target.value;
 
-    // Detect format and extract sequence
-    const { format, sequence } = detectFormatAndExtractSequence(text);
+    // Detect format and extract sequences
+    const { format, sequences } = detectFormatAndExtractSequence(text);
 
-    // Determine the sequence type
-    const sequenceType = detectSequenceType(sequence);
-    const feedback = format === "Unknown" ? sequenceType : `Detected format: ${format} - ${sequenceType}`;
+    // Determine the sequence types for each sequence
+    const sequenceTypes = detectSequenceTypes(sequences);
 
-    document.getElementById('feedback').textContent = feedback;
+    // Generate feedback
+    let feedback = `Format: ${format}\n`;
+    Object.keys(sequenceTypes).forEach(identifier => {
+        feedback += `${identifier ? identifier + ": " : ""}${sequenceTypes[identifier]}\n`;
+    });
+
+    document.getElementById('feedback').textContent = feedback.trim();
 }
 
 document.getElementById('sequenceInput').addEventListener('input', handleInputEvent);
