@@ -81,11 +81,27 @@ function handleInputEvent(e) {
     // Determine the sequence types for each sequence
     const sequenceTypes = detectSequenceTypes(sequences);
 
-    // Generate feedback
-    let feedback = `Format: ${format}\n`;
-    Object.keys(sequenceTypes).forEach(identifier => {
-        feedback += `${identifier ? identifier + ": " : ""}${sequenceTypes[identifier]}\n`;
-    });
+    // Detail feedback
+    // let feedback = `Format: ${format}\n`;
+    // Object.keys(sequenceTypes).forEach(identifier => {
+    //     feedback += `${identifier ? identifier + ": " : ""}${sequenceTypes[identifier]}\n`;
+    // });
+    // Extract unique sequence types from the detected types
+
+    // Summary feedback
+    const uniqueSequenceTypes = Object.values(sequenceTypes).reduce((acc, type) => {
+        acc.add(type); // Add type to the Set, automatically ensuring uniqueness
+        return acc;
+    }, new Set());
+
+    // Convert the Set of unique types to a string for display
+    const uniqueSequenceTypesStr = Array.from(uniqueSequenceTypes).join(", ");
+
+    // Count of sequences detected
+    const numberOfSequences = Object.keys(sequences).length;
+
+    // Generate feedback that includes the format, unique sequence types, and number of sequences
+    let feedback = `Format: ${format}, Types: ${uniqueSequenceTypesStr}, Number of Sequences: ${numberOfSequences}`;
 
     document.getElementById('feedback').textContent = feedback.trim();
 }
