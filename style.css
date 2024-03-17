@@ -19,3 +19,10 @@ body {
 .input-field label.active {
     transform: translateY(-14px) scale(0.8);
 }
+
+.materialize-textarea {
+    max-height: 16rem; /* Adjust based on your preference */
+    overflow-y: auto; /* Makes it scrollable when content exceeds max-height */
+    font-family: 'Courier New', Courier, monospace;
+    font-size: small !important;
+}
