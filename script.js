@@ -3,14 +3,14 @@ function detectSequenceType(sequence) {
     const cleanedSequence = sequence.replace(/[-.\s]/g, ""); // Strip gaps, newlines, and whitespace
 
     if (/^[ATCGNatcgn]+$/.test(cleanedSequence)) {
-        return "DNA detected";
+        return "DNA";
     } else if (/^[AUCGNaucgn]+$/.test(cleanedSequence)) {
-        return "RNA detected";
+        return "RNA";
     } else if (/^[A-Za-z]+$/.test(cleanedSequence)) {
-        return "Protein detected";
+        return "Protein";
     }
 
-    return "Unknown format";
+    return "Unknown";
 }
 
 function parseFASTA(text) {
@@ -101,7 +101,7 @@ function handleInputEvent(e) {
     const numberOfSequences = Object.keys(sequences).length;
 
     // Generate feedback that includes the format, unique sequence types, and number of sequences
-    let feedback = `Format: ${format}, Types: ${uniqueSequenceTypesStr}, Number of Sequences: ${numberOfSequences}`;
+    let feedback = `Format: ${format}, Sequence types: ${uniqueSequenceTypesStr}, Number of Sequences: ${numberOfSequences}`;
 
     document.getElementById('feedback').textContent = feedback.trim();
 }
