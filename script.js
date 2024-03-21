@@ -75,6 +75,12 @@ function detectSequenceTypes(sequences) {
 function handleInputEvent(e) {
     const text = e.target.value;
 
+    // Clear feedback if no input is provided
+    if (text.trim() === "") {
+        document.getElementById('feedback').textContent = "";
+        return;
+    }
+
     // Detect format and extract sequences
     const { format, sequences } = detectFormatAndExtractSequence(text);
 
@@ -101,7 +107,15 @@ function handleInputEvent(e) {
     const numberOfSequences = Object.keys(sequences).length;
 
     // Generate feedback that includes the format, unique sequence types, and number of sequences
-    let feedback = `Format: ${format}, Sequence types: ${uniqueSequenceTypesStr}, Number of Sequences: ${numberOfSequences}`;
+    let feedback;
+
+    if (numberOfSequences === 1) {
+        const sequence = sequences[Object.keys(sequences)[0]];
+        const sequenceLength = sequence.length;
+        feedback = `Dectected ${format} | ${uniqueSequenceTypesStr} | single sequence | ${sequenceLength} residues`;
+    } else {
+        feedback = `Dectected ${format} | ${uniqueSequenceTypesStr} | ${numberOfSequences} sequences`;
+    }
 
     document.getElementById('feedback').textContent = feedback.trim();
 }
