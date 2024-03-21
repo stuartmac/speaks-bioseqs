@@ -107,3 +107,78 @@ function handleInputEvent(e) {
 }
 
 document.getElementById('sequenceInput').addEventListener('input', handleInputEvent);
+
+
+// Input conversion functions
+function convertToFASTA(sequences) {
+    let fastaText = "";
+    Object.keys(sequences).forEach(identifier => {
+        fastaText += `>${identifier}\n${sequences[identifier]}\n`;
+    });
+    return fastaText;
+}
+
+function convertToCLUSTAL(sequences) {
+    let clustalText = "CLUSTAL\n\n";
+    const identifiers = Object.keys(sequences);
+    const sequencesArray = Object.values(sequences);
+    const maxLength = Math.max(...sequencesArray.map(sequence => sequence.length));
+
+    for (let i = 0; i < maxLength; i += 60) {
+        for (let j = 0; j < identifiers.length; j++) {
+            const identifier = identifiers[j];
+            const sequence = sequences[identifier];
+            // Clustal ids cant have spaces
+            // new_identifier = identifier.replace(/\s/g, "_");
+            // Jalview just truncates the id after the first space
+            new_identifier = identifier.split(" ")[0];
+            // Add identifier and sequence chunk of 60 characters
+            clustalText += `${new_identifier} ${sequence.substring(i, i + 60)}\n`;
+        }
+        clustalText += "\n";
+    }
+    return clustalText;
+}
+
+// Initialize Materialize select dropdown
+document.addEventListener('DOMContentLoaded', function() {
+    var elems = document.querySelectorAll('select');
+    M.FormSelect.init(elems);
+});
+
+function triggerDownload(content, fileName) {
+    const element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(content));
+    element.setAttribute('download', fileName);
+
+    element.style.display = 'none';
+    document.body.appendChild(element);
+
+    element.click();
+
+    document.body.removeChild(element);
+}
+
+document.getElementById('convertAndDownload').addEventListener('click', function() {
+    const text = document.getElementById('sequenceInput').value;
+    const { sequences } = detectFormatAndExtractSequence(text);
+    const outputFormat = document.getElementById('outputFormat').value;
+    
+    let convertedText = "";
+    // Choose the conversion function based on the selected output format
+    switch (outputFormat) {
+        case "FASTA":
+            convertedText = convertToFASTA(sequences);
+            break;
+        case "CLUSTAL":
+            convertedText = convertToCLUSTAL(sequences);
+            break;
+        // Add more cases as needed for additional formats
+        default:
+            alert("Unsupported format selected");
+            return;
+    }
+
+    // Trigger download
+    triggerDownload(convertedText, `converted_sequence.${outputFormat.toLowerCase()}`);
+});
