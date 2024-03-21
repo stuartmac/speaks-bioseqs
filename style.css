@@ -1,7 +1,34 @@
 body {
-    margin-top: 20px;
+    /* margin-top: 20px; */
     font-family: Arial, sans-serif;
     background-color: #f4f4f4;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+nav {
+    margin-bottom: 20px; /* Spacing after nav */
+}
+
+.container {
+    flex: 1;
+}
+
+.title {
+    margin-bottom: 20px;
+}
+
+.tagline {
+    margin-top: 20px;
+}
+
+.page-footer {
+    background-color: transparent;
+}
+
+textarea#sequenceInput {
+    height: 100px; /* Adjust based on preference */
 }
 
 /* Add custom styles for Materialize components here */
